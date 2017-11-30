@@ -3,15 +3,9 @@
 var request = require("request");
 var inquirer = require("inquirer");
 var Twitter = require("twitter");
+var Spotify = require('node-spotify-api');
+var fs = require("fs");
 var keys = require("./keys.js");
-
-client = new Twitter(keys.twitterKey);
-
-var uInput = process.argv[4];
-
-// 1. `node liri.js my-tweets`
-
-//    * This will show your last 20 tweets and when they were created at in your terminal/bash window.
 
 inquirer.prompt([
 
@@ -25,36 +19,37 @@ inquirer.prompt([
 
     switch (command.userInput) {
         case "my-tweets":
-          console.log("here are your tweets")
           getTweets();
           break;
       
         // case "spotify-this-song":
         //   getSong();
         //   break;
-
-// 3. `node liri.js movie-this '<movie name here>'`
-        
-//      * If you haven't watched "Mr. Nobody," then you should: <http://www.imdb.com/title/tt0485947/>
-        
-//      * It's on Netflix!
-    
-//    * You'll use the request package to retrieve data from the OMDB API. Like all of the in-class activities, the OMDB API requires an API key. You may use `40e9cece`.
-      
+     
         case "movie-this":
           getMovie();
           break;
+
+// 4. `node liri.js do-what-it-says`
+
+// * Using the `fs` Node package, LIRI will take the text inside of random.txt and then use it to call one of LIRI's commands.
+
+// * It should run `spotify-this-song` for "I Want it That Way," as follows the text in `random.txt`.
+
+// * Feel free to change the text in that document to test out the feature for other commands.
       
-        // case "do-what-it-says":
-        //   readCommand();
-        //   break;
+        case "do-what-it-says":
+          readCommand();
+          break;
     }
 
 });
 
 function getTweets(){
 
-    console.log("here are your last 20 tweets, try and calm down: ")
+    var client = new Twitter(keys.twitterKey);
+
+    console.log("Here are your last 20 tweets, try and calm down: ")
 
     client.get('statuses/user_timeline', { screen_name: 'boss_whedon', count: 20}, function(error, tweets, response) {
         for (var i = 0, len = tweets.length; i < len; i++) {
@@ -78,7 +73,6 @@ function getMovie(){
 
         var movieTitle = command.userInput;
 
-//    * If the user doesn't type a movie in, the program will output data for the movie 'Mr. Nobody.'
         if (movieTitle === ""){
             movieTitle = "Mr.Nobody";
         };
@@ -112,4 +106,23 @@ function getMovie(){
     });
 
 }
+
+function readCommand(){
+
+    fs.readFile("random.txt", "utf8", function(error, data) {
+        
+        if (error) {
+        return console.log(error);
+        }
+    
+        var dataArr = data.split(",");
+    
+        console.log(dataArr);
+        
+    });
+
+}
+
+
+
 
