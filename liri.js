@@ -72,25 +72,41 @@ function getSong(){
 // * The album that the song is from
 
 // * If no song is provided then your program will default to "The Sign" by Ace of Base.
-
-    var spotify = new Spotify(keys.spotifyKey);
-
-    spotify.search({ type: 'track', query: 'All the Small Things' }, function(err, data) {
-        if (err) {
-            return console.log('Error occurred: ' + err);
+    inquirer.prompt([
+    
+        {
+            type: "input",
+            name: "userInput",
+            message: "Ok what song?"
         }
+    
+    ]).then(function(command) {
+
+        var songTitle = command.userInput;
+
+        if (songTitle === ""){
+            songTitle = "The Sign";
+        };
+
+        var spotify = new Spotify(keys.spotifyKey);
         
-        //console.log(JSON.stringify(data, null, 2)); 
-
-        var stringy = JSON.stringify(data, null, 2)
-
-        fs.writeFile("spot-obj.txt", stringy, function(error) {
-            
-            if (error) {
-            return console.log(error);
+        spotify.search({ type: 'track', query: songTitle }, function(err, data) {
+            if (err) {
+                return console.log('Error occurred: ' + err);
             }
+
+            // * Artist(s)
+
+            // * The song's name
+
+            // * A preview link of the song from Spotify
+
+            // * The album that the song is from
             
+            //console.log(JSON.stringify(data, null, 2)); 
+    
         });
+
     });
 
 }
@@ -157,6 +173,32 @@ function readCommand(){
         
     });
 
+}
+
+function logger(){
+    // * In addition to logging the data to your terminal/bash window, output the data to a .txt file called `log.txt`.
+    
+    // * Make sure you append each command you run to the `log.txt` file. 
+    
+    // * Do not overwrite your file each time you run a command.
+
+    var textFile = process.argv[2];
+    
+    // We then append the contents "Hello Kitty" into the file
+    // If the file didn't exist then it gets created on the fly.
+    fs.appendFile(textFile, "Hello Kitty", function(err) {
+    
+      // If an error was experienced we say it.
+      if (err) {
+        console.log(err);
+      }
+    
+      // If no error is experienced, we'll log the phrase "Content Added" to our node console.
+      else {
+        console.log("Content Added!");
+      }
+    
+    });
 }
 
 
