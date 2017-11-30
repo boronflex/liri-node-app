@@ -22,9 +22,9 @@ inquirer.prompt([
           getTweets();
           break;
       
-        // case "spotify-this-song":
-        //   getSong();
-        //   break;
+        case "spotify-this-song":
+          getSong();
+          break;
      
         case "movie-this":
           getMovie();
@@ -55,6 +55,42 @@ function getTweets(){
         for (var i = 0, len = tweets.length; i < len; i++) {
             console.log(tweets[i].text);
         }
+    });
+
+}
+
+function getSong(){
+
+// * This will show the following information about the song in your terminal/bash window
+
+// * Artist(s)
+
+// * The song's name
+
+// * A preview link of the song from Spotify
+
+// * The album that the song is from
+
+// * If no song is provided then your program will default to "The Sign" by Ace of Base.
+
+    var spotify = new Spotify(keys.spotifyKey);
+
+    spotify.search({ type: 'track', query: 'All the Small Things' }, function(err, data) {
+        if (err) {
+            return console.log('Error occurred: ' + err);
+        }
+        
+        //console.log(JSON.stringify(data, null, 2)); 
+
+        var stringy = JSON.stringify(data, null, 2)
+
+        fs.writeFile("spot-obj.txt", stringy, function(error) {
+            
+            if (error) {
+            return console.log(error);
+            }
+            
+        });
     });
 
 }
