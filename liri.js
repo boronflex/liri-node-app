@@ -50,9 +50,11 @@ function getTweets(){
     console.log("get tweets called");
     //console.log(keys.twitterKey);
 
-    client.get('search/tweets', {q: '@boss_whedon'}, function(error, tweets, response) {
-        console.log(tweets);
-     });
+    client.get('statuses/user_timeline', { screen_name: 'boss_whedon', count: 20}, function(error, tweets, response) {
+        for (var i = 0, len = tweets.length; i < len; i++) {
+            console.log(tweets[i].text);
+        }
+    });
 
 }
 
