@@ -50,64 +50,68 @@ function getTweets(){
         }
 
     });
-
-    
-
 }
 
 function getSong(){
 
     inquirer.prompt([
-    
+
         {
             type: "input",
             name: "userInput",
             message: "Ok what song?"
         }
-    
-    ]).then(function(command) {
 
-        var spotify = new Spotify(keys.spotifyKey);
+    ]).then(function(command) {
 
         var songTitle = command.userInput;
 
-        if (songTitle === ""){
-            
-            //songTitle = "The Sign";
+        searchSong(songTitle);
 
-            spotify
-            .request('https://api.spotify.com/v1/tracks/3DYVWvPh3kGwPasp7yjahc')
-            .then(function(data) {
+    });
 
-                //console.log(data); 
+};
 
-                // * Artist(s)
+function searchSong(songTitle){
 
-                console.log(`Artist Name: ${data["album"]["artists"][0]["name"]}`)
-                logger(data["album"]["artists"][0]["name"]);
-                
-                // * The song's name
-
-                console.log(`Song Title: ${data["name"]}`)
-                logger(data["name"]);
-                
-                // * A preview link of the song from Spotify
-
-                console.log(`Preview Link ${data["album"]["artists"][0]["external_urls"]["spotify"]}`)
-                logger(data["album"]["artists"][0]["external_urls"]["spotify"]);
-
-                // * The album that the song is from
-
-                console.log(`Album: ${data["album"]["name"]}`)
-                logger(data["album"]["name"])
+    var spotify = new Spotify(keys.spotifyKey);
+    
+    if (songTitle === ""){
         
+        //songTitle = "The Sign";
+        //ace of base doesnt come up as the first result
 
-            })
-            .catch(function(err) {
-              console.error('Error occurred: ' + err); 
-            });
+        spotify
+        .request('https://api.spotify.com/v1/tracks/3DYVWvPh3kGwPasp7yjahc')
+        .then(function(data) {
 
-        } else {
+            // * Artist(s)
+
+            console.log(`Artist Name: ${data["album"]["artists"][0]["name"]}`)
+            logger(data["album"]["artists"][0]["name"]);
+            
+            // * The song's name
+
+            console.log(`Song Title: ${data["name"]}`)
+            logger(data["name"]);
+            
+            // * A preview link of the song from Spotify
+
+            console.log(`Preview Link: ${data["album"]["artists"][0]["external_urls"]["spotify"]}`)
+            logger(data["album"]["artists"][0]["external_urls"]["spotify"]);
+
+            // * The album that the song is from
+
+            console.log(`Album: ${data["album"]["name"]}`)
+            logger(data["album"]["name"])
+    
+
+        })
+        .catch(function(err) {
+          console.error('Error occurred: ' + err); 
+        });
+
+    } else {
 
         spotify.search({ type: 'track', query: songTitle, limit: 1 }, function(err, data) {
             if (err) {
@@ -135,14 +139,12 @@ function getSong(){
             logger(data["tracks"]["items"][0]["album"]["name"]);
             
             //console.log(JSON.stringify(data, null, 2)); 
-    
+
         });
 
-        }
+    }
 
-    });
-
-}
+};
 
 function getMovie(){
 
@@ -158,44 +160,50 @@ function getMovie(){
 
         var movieTitle = command.userInput;
 
-        if (movieTitle === ""){
-            movieTitle = "Mr.Nobody";
-        };
+        searchMovie(movieTitle);
 
-        var queryUrl = "http://www.omdbapi.com/?t=" + movieTitle + "&y=&plot=short&apikey=40e9cece";
+    });
 
-        request(queryUrl, function(error, response, body) {
+}
 
-            if (!error && response.statusCode === 200) {
+function searchMovie(movieTitle){
 
-                //        * Title of the movie.
-                console.log(`TItle: ${JSON.parse(body).Title}`);
-                logger(JSON.parse(body).Title);
-                //        * Year the movie came out.
-                console.log(`Year released: ${(JSON.parse(body).Released).slice(-4)}`);
-                logger((JSON.parse(body).Released).slice(-4));
-                //        * IMDB Rating of the movie.
-                console.log(`IMDB rating: ${JSON.parse(body).imdbRating}`);
-                logger(JSON.parse(body).imdbRating);
-                //        * Rotten Tomatoes Rating of the movie.
-                console.log(`Rotten Tomatoes rating: ${JSON.parse(body).Ratings[1].Value}`);
-                logger(JSON.parse(body).Ratings[1].Value);
-                //        * Country where the movie was produced.
-                console.log(`Country where produced: ${JSON.parse(body).Country}`);
-                logger(JSON.parse(body).Country);
-                //        * Language of the movie.
-                console.log(`Language: ${JSON.parse(body).Language}`);
-                logger(JSON.parse(body).Language);
-                //        * Plot of the movie.
-                console.log(`Plot: ${JSON.parse(body).Plot}`);
-                logger(JSON.parse(body).Plot);
-                //        * Actors in the movie.
-                console.log(`Actors: ${JSON.parse(body).Actors}`);
-                logger(JSON.parse(body).Actors);
+    if (movieTitle === ""){
+        movieTitle = "Mr.Nobody";
+    };
 
-            }
-        });
+    var queryUrl = "http://www.omdbapi.com/?t=" + movieTitle + "&y=&plot=short&apikey=40e9cece";
 
+    request(queryUrl, function(error, response, body) {
+
+        if (!error && response.statusCode === 200) {
+
+            //        * Title of the movie.
+            console.log(`TItle: ${JSON.parse(body).Title}`);
+            logger(JSON.parse(body).Title);
+            //        * Year the movie came out.
+            console.log(`Year released: ${(JSON.parse(body).Released).slice(-4)}`);
+            logger((JSON.parse(body).Released).slice(-4));
+            //        * IMDB Rating of the movie.
+            console.log(`IMDB rating: ${JSON.parse(body).imdbRating}`);
+            logger(JSON.parse(body).imdbRating);
+            //        * Rotten Tomatoes Rating of the movie.
+            console.log(`Rotten Tomatoes rating: ${JSON.parse(body).Ratings[1].Value}`);
+            logger(JSON.parse(body).Ratings[1].Value);
+            //        * Country where the movie was produced.
+            console.log(`Country where produced: ${JSON.parse(body).Country}`);
+            logger(JSON.parse(body).Country);
+            //        * Language of the movie.
+            console.log(`Language: ${JSON.parse(body).Language}`);
+            logger(JSON.parse(body).Language);
+            //        * Plot of the movie.
+            console.log(`Plot: ${JSON.parse(body).Plot}`);
+            logger(JSON.parse(body).Plot);
+            //        * Actors in the movie.
+            console.log(`Actors: ${JSON.parse(body).Actors}`);
+            logger(JSON.parse(body).Actors);
+
+        }
     });
 
 }
@@ -210,7 +218,22 @@ function readCommand(){
     
         var dataArr = data.split(",");
     
-        console.log(dataArr);
+        //console.log(dataArr);
+
+        switch (dataArr[0]) {
+            
+            case "my-tweets":
+              getTweets();
+              break;
+          
+            case "spotify-this-song":
+              searchSong(dataArr[1]);
+              break;
+         
+            case "movie-this":
+              searchMovie(dataArr[1]);
+              break;
+        }
         
     });
 
