@@ -29,14 +29,6 @@ inquirer.prompt([
         case "movie-this":
           getMovie();
           break;
-
-// 4. `node liri.js do-what-it-says`
-
-// * Using the `fs` Node package, LIRI will take the text inside of random.txt and then use it to call one of LIRI's commands.
-
-// * It should run `spotify-this-song` for "I Want it That Way," as follows the text in `random.txt`.
-
-// * Feel free to change the text in that document to test out the feature for other commands.
       
         case "do-what-it-says":
           readCommand();
@@ -61,17 +53,6 @@ function getTweets(){
 
 function getSong(){
 
-// * This will show the following information about the song in your terminal/bash window
-
-// * Artist(s)
-
-// * The song's name
-
-// * A preview link of the song from Spotify
-
-// * The album that the song is from
-
-// * If no song is provided then your program will default to "The Sign" by Ace of Base.
     inquirer.prompt([
     
         {
@@ -82,30 +63,70 @@ function getSong(){
     
     ]).then(function(command) {
 
+        var spotify = new Spotify(keys.spotifyKey);
+
         var songTitle = command.userInput;
 
         if (songTitle === ""){
-            songTitle = "The Sign";
-        };
+            
+            //songTitle = "The Sign";
 
-        var spotify = new Spotify(keys.spotifyKey);
-        
-        spotify.search({ type: 'track', query: songTitle }, function(err, data) {
+            spotify
+            .request('https://api.spotify.com/v1/tracks/3DYVWvPh3kGwPasp7yjahc')
+            .then(function(data) {
+
+                //console.log(data); 
+
+                // * Artist(s)
+
+                console.log(`Artist Name: ${data["album"]["artists"][0]["name"]}`)
+                
+                // * The song's name
+
+                console.log(`Song Title: ${data["name"]}`)
+                
+                // * A preview link of the song from Spotify
+
+                console.log(`Preview Link ${data["album"]["artists"][0]["external_urls"]["spotify"]}`)
+
+                // * The album that the song is from
+
+                console.log(`Album: ${data["album"]["name"]}`)
+
+
+            })
+            .catch(function(err) {
+              console.error('Error occurred: ' + err); 
+            });
+
+        } else {
+
+        spotify.search({ type: 'track', query: songTitle, limit: 1 }, function(err, data) {
             if (err) {
                 return console.log('Error occurred: ' + err);
             }
 
             // * Artist(s)
 
+            console.log(`Artist Name: ${data["tracks"]["items"][0]["album"]["artists"][0]["name"]}`)
+            
             // * The song's name
 
+            console.log(`Song Name: ${data["tracks"]["items"][0]["name"]}`)
+            
             // * A preview link of the song from Spotify
 
+            console.log(`Preview Link ${data["tracks"]["items"][0]["album"]["artists"][0]["external_urls"]["spotify"]}`)
+
             // * The album that the song is from
+
+            console.log(`Album: ${data["tracks"]["items"][0]["album"]["name"]}`)
             
             //console.log(JSON.stringify(data, null, 2)); 
     
         });
+
+        }
 
     });
 
@@ -175,25 +196,14 @@ function readCommand(){
 
 }
 
-function logger(){
-    // * In addition to logging the data to your terminal/bash window, output the data to a .txt file called `log.txt`.
+function logger(data){
     
-    // * Make sure you append each command you run to the `log.txt` file. 
+    fs.appendFile(data, "log.txt", function(err) {
     
-    // * Do not overwrite your file each time you run a command.
-
-    var textFile = process.argv[2];
-    
-    // We then append the contents "Hello Kitty" into the file
-    // If the file didn't exist then it gets created on the fly.
-    fs.appendFile(textFile, "Hello Kitty", function(err) {
-    
-      // If an error was experienced we say it.
       if (err) {
         console.log(err);
       }
-    
-      // If no error is experienced, we'll log the phrase "Content Added" to our node console.
+      
       else {
         console.log("Content Added!");
       }
