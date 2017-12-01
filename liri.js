@@ -46,8 +46,12 @@ function getTweets(){
     client.get('statuses/user_timeline', { screen_name: 'boss_whedon', count: 20}, function(error, tweets, response) {
         for (var i = 0, len = tweets.length; i < len; i++) {
             console.log(tweets[i].text);
+            logger(tweets[i].text);
         }
+
     });
+
+    
 
 }
 
@@ -80,19 +84,23 @@ function getSong(){
                 // * Artist(s)
 
                 console.log(`Artist Name: ${data["album"]["artists"][0]["name"]}`)
+                logger(data["album"]["artists"][0]["name"]);
                 
                 // * The song's name
 
                 console.log(`Song Title: ${data["name"]}`)
+                logger(data["name"]);
                 
                 // * A preview link of the song from Spotify
 
                 console.log(`Preview Link ${data["album"]["artists"][0]["external_urls"]["spotify"]}`)
+                logger(data["album"]["artists"][0]["external_urls"]["spotify"]);
 
                 // * The album that the song is from
 
                 console.log(`Album: ${data["album"]["name"]}`)
-
+                logger(data["album"]["name"])
+        
 
             })
             .catch(function(err) {
@@ -109,18 +117,22 @@ function getSong(){
             // * Artist(s)
 
             console.log(`Artist Name: ${data["tracks"]["items"][0]["album"]["artists"][0]["name"]}`)
+            logger(data["tracks"]["items"][0]["album"]["artists"][0]["name"]);
             
             // * The song's name
 
             console.log(`Song Name: ${data["tracks"]["items"][0]["name"]}`)
+            logger(data["tracks"]["items"][0]["name"]);
             
             // * A preview link of the song from Spotify
 
             console.log(`Preview Link ${data["tracks"]["items"][0]["album"]["artists"][0]["external_urls"]["spotify"]}`)
+            logger(data["tracks"]["items"][0]["album"]["artists"][0]["external_urls"]["spotify"]);
 
             // * The album that the song is from
 
             console.log(`Album: ${data["tracks"]["items"][0]["album"]["name"]}`)
+            logger(data["tracks"]["items"][0]["album"]["name"]);
             
             //console.log(JSON.stringify(data, null, 2)); 
     
@@ -158,20 +170,28 @@ function getMovie(){
 
                 //        * Title of the movie.
                 console.log(`TItle: ${JSON.parse(body).Title}`);
+                logger(JSON.parse(body).Title);
                 //        * Year the movie came out.
                 console.log(`Year released: ${(JSON.parse(body).Released).slice(-4)}`);
+                logger((JSON.parse(body).Released).slice(-4));
                 //        * IMDB Rating of the movie.
                 console.log(`IMDB rating: ${JSON.parse(body).imdbRating}`);
+                logger(JSON.parse(body).imdbRating);
                 //        * Rotten Tomatoes Rating of the movie.
                 console.log(`Rotten Tomatoes rating: ${JSON.parse(body).Ratings[1].Value}`);
+                logger(JSON.parse(body).Ratings[1].Value);
                 //        * Country where the movie was produced.
                 console.log(`Country where produced: ${JSON.parse(body).Country}`);
+                logger(JSON.parse(body).Country);
                 //        * Language of the movie.
                 console.log(`Language: ${JSON.parse(body).Language}`);
+                logger(JSON.parse(body).Language);
                 //        * Plot of the movie.
                 console.log(`Plot: ${JSON.parse(body).Plot}`);
+                logger(JSON.parse(body).Plot);
                 //        * Actors in the movie.
                 console.log(`Actors: ${JSON.parse(body).Actors}`);
+                logger(JSON.parse(body).Actors);
 
             }
         });
@@ -197,15 +217,19 @@ function readCommand(){
 }
 
 function logger(data){
+
+    data = `${data} \n`
+
+    //data = JSON.stringify(data, null, 2) + "\n"
     
-    fs.appendFile(data, "log.txt", function(err) {
+    fs.appendFile("log.txt", data, function(err) {
     
       if (err) {
         console.log(err);
       }
-      
+
       else {
-        console.log("Content Added!");
+        //console.log("Content Added!");
       }
     
     });
